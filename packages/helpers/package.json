@@ -1,0 +1,5 @@
+{
+  "name": "@packages/helpers",
+  "type": "module",
+  "main": "index.js"
+}
