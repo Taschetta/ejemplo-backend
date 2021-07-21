@@ -1,0 +1,15 @@
+{
+  "name": "ejemplo-backend",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.12"
+  }
+}
