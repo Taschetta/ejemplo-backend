@@ -1,5 +1,5 @@
 import { ConnectionError, EndConnectionError, QueryError } from "../errors/index.js"
-
+import { format, raw } from 'mysql'
 /**
  * 
  * @param {Object} config
@@ -26,6 +26,7 @@ export const useDatabase = ({ connection }) => ({
   },
 
   async query(sql, values) {
+    console.log(sql)
     return new Promise((resolve, reject) => {
       connection.query(sql, values, (error, result) => {
         if(error) {
@@ -37,12 +38,15 @@ export const useDatabase = ({ connection }) => ({
     })
   },
 
-  format(sql, values) {
-    return connection.format(sql, values)
-  },
+  format,
+  raw,
 
-  raw(sql) {
-    return connection.format(sql)
-  }
+  // format(sql, values) {
+  //   return format(sql, values)
+  // },
+
+  // raw(sql) {
+  //   return raw(sql)
+  // }
   
 })

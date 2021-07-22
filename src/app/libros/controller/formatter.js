@@ -1,10 +1,11 @@
 
 export const useFormatter = () => ({
 
-  cleanOne({ id = 0, nombre }) {
+  cleanOne({ id = 0, titulo, fkAutor }) {
     return {
       id,
-      nombre,
+      titulo,
+      fkAutor,
     }
   },
 

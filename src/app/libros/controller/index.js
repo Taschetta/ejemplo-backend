@@ -4,6 +4,7 @@ export const useController = ({ table }) => {
   const formatter = useFormatter()
 
   return {
+
     async findMany(filters) {
       return await table.findMany(filters)
     },
@@ -15,13 +16,38 @@ export const useController = ({ table }) => {
     async insertOne(item) {
       return await table.insertOne(item)
     },
-  
-    async updateOne(item) {
-      return await table.updateOne(item)
+
+    async insertMany(items, globals) {
+      items = formatter.cleanMany(items, globals)
+      items = await table.insertMany(items)
+      return items
     },
   
-    async removeOne({ id }) {
-      return await table.removeOne({ id })
+    async updateOne(filters, update) {
+      return await table.updateOne(filters, update)
     },
+
+    async updateMany(filters, update) {
+      return await table.updateMany(filters, update)
+    },
+
+    async upsertOne(item) {
+      return await table.upsertOne(item)
+    },
+
+    async upsertMany(items, globals){
+      items = formatter.cleanMany(items, globals) 
+      items = await table.upsertMany(items)
+      return items
+    },
+  
+    async removeOne(filters) {
+      return await table.removeOne(filters)
+    },
+
+    async removeMany(filters) {
+      return await table.removeMany(filters)
+    }
+    
   }  
 }

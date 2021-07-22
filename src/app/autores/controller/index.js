@@ -27,16 +27,16 @@ export const useController = ({ table, libros }) => {
   
     async insertOne({ libros, ...item }) {
       item = await table.insertOne(item)
-      items.libros = await this.libros.insertMany(libros, { fkAutor: item.id })
+      item.libros = await this.libros.insertMany(libros, { fkAutor: item.id })
       return item
     },
   
-    async updateOne({ libros, ...item }) {
-      item = await table.updateOne(item)
+    async updateOne({ id, libros, ...item }) {
+      item = await table.updateOne({ id }, item)
       
       item.libros = await this.libros.upsertMany(libros, { fkAutor: item.id })
       
-      await this.libros.remove({ fkAutor: item.id, id: { $not: { $in: libros } } })
+      await this.libros.removeMany({ fkAutor: item.id, id: { $not: { $in: libros } } })
 
       return item
     },
