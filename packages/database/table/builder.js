@@ -25,26 +25,20 @@ export const useBuilder = ({ database }) => {
       return database.format('DELETE FROM ??', [table])
     },
 
-    $where(filters, options = { negate: false, raw: false }) {   
-      
-      const formatValue = (value) => {
-        if(options.raw)
-          value = database.raw(value)
-
-        return value
-      }
-      
+    $where(filters, options = { negate: false, raw: false }) {         
       const statements = {
-        //cambiar a equal
+        
         $exact: (column, value) => {
           let sql = options.negate ? '?? != ?' : '?? = ?'
           return database.format(sql, [column, formatValue(value)])
         },
+        
         $gte: (column, value) => {
           let sql = options.negate ? '?? < ?' : '?? >= ?'
           
           return database.format(sql, [column, formatValue(value)])
         },
+        
         $in: (column, values) => {
           let sql = options.negate ? '?? NOT IN (?)' : '?? IN (?)'
 
@@ -56,55 +50,67 @@ export const useBuilder = ({ database }) => {
           
           return database.format(sql, [column, formatValue(values)])
         },
+        
         $like: (column, value) => {
           let sql = options.negate ? '?? NOT LIKE ?' : '?? LIKE ?'
           value = `%${value}%`
           return database.format(sql, [column, formatValue(value)]) 
         },
+        
         $not: (column, value) => {
           return this.$where({ [column]: value }, { negate: true }).replace('WHERE ', '')
         },
+        
         $raw: (column, value) => {
           return this.$where({ [column]: value }, { raw: true }).replace('WHERE ', '')
         }
+
       }
 
-      const toStatement = ([column, filters]) => {
-        return Object
+      let result = 
+        Object
           .entries(filters)
-          .map(([key, value]) => statements[key](column, value))
-      }
+          .map(toFilters)
+          .map(toStatement)
+          .join(' AND ')
+        
+      return result && 'WHERE ' + result
 
-      const parse = ([key, value]) => {
-        switch (typeof value) {
+      function toFilters([colum, filter]) {
+        switch (typeof filter) {
           case 'string':
-            return [key, { $like: value }]
+            return [colum, { $like: filter }]
 
           case 'number':
-            return [key, { $exact: value }]
+            return [colum, { $exact: filter }]
 
           case 'boolean':
-            return [key, { $exact: value }]
+            return [colum, { $exact: filter }]
 
           case 'object':
-            return [key, value]
+            return [colum, filter]
 
           default:
-            throw new Error(`Default filter for type ${typeof value} not implemented`)
+            throw new Error(`Default filter for type ${typeof filter} not implemented`)
         }
       }
 
-      const entries = Object.entries(filters)
-      
-      if(!entries.length)
-        return
+      function toStatement([column, filters]) {
+        return (
+          Object
+            .entries(filters)
+            .map(([filter, value]) => 
+              statements[filter](column, value)
+            )
+        )
+      }
 
-      let result = entries
-      .map(parse)
-      .map(toStatement)
-      .join(' AND ')
-        
-      return result && 'WHERE ' + result
+      function formatValue(value) {
+        if(options.raw)
+          value = database.raw(value)
+
+        return value
+      }
     },
 
     $order({ field, order = 'ASC' }) {
@@ -125,18 +131,18 @@ export const useBuilder = ({ database }) => {
     
   }
 
-  const toStatement = ([key, value]) => {
+  return (query) => 
+    Object
+      .entries(query)
+      .map(toStatement)
+      .filter(isValid)
+      .join(' ')
+
+  function toStatement([key, value]) {
     return value && statements[key](value)
   }
 
-  const generate = (query) => {
-    return Object.entries(query)
-      .map(toStatement)
-      .filter(statements => !!statements)
-      .join(' ')
-  }
-
-  return (query) =>{
-    return generate(query)
+  function isValid(statement) {
+    return !!statement
   }
 }

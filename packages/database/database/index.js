@@ -26,7 +26,6 @@ export const useDatabase = ({ connection }) => ({
   },
 
   async query(sql, values) {
-    console.log(sql)
     return new Promise((resolve, reject) => {
       connection.query(sql, values, (error, result) => {
         if(error) {
@@ -38,15 +37,12 @@ export const useDatabase = ({ connection }) => ({
     })
   },
 
-  format,
-  raw,
+  format(sql, values) {
+    return format(sql, values)
+  },
 
-  // format(sql, values) {
-  //   return format(sql, values)
-  // },
-
-  // raw(sql) {
-  //   return raw(sql)
-  // }
+  raw(sql) {
+    return raw(sql)
+  }
   
 })
