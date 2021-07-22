@@ -1,24 +1,27 @@
+import { useFormatter } from "./formatter.js"
 
-export const useController = ({ table }) => ({
+export const useController = ({ table }) => {
+  const formatter = useFormatter()
 
-  async findMany(filters) {
-    return await table.findMany(filters)
-  },
-
-  async findOne({ id }) {
-    return await table.findOne({ id })
-  },
-
-  async insertOne(item) {
-    return await table.insertOne(item)
-  },
-
-  async updateOne(item) {
-    return await table.updateOne(item)
-  },
-
-  async removeOne({ id }) {
-    return await table.removeOne({ id })
-  },
+  return {
+    async findMany(filters) {
+      return await table.findMany(filters)
+    },
   
-})
+    async findOne(filters) {
+      return await table.findOne(filters)
+    },
+  
+    async insertOne(item) {
+      return await table.insertOne(item)
+    },
+  
+    async updateOne(item) {
+      return await table.updateOne(item)
+    },
+  
+    async removeOne({ id }) {
+      return await table.removeOne({ id })
+    },
+  }  
+}

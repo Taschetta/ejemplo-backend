@@ -40,5 +40,9 @@ export const useDatabase = ({ connection }) => ({
   format(sql, values) {
     return connection.format(sql, values)
   },
+
+  raw(sql) {
+    return connection.format(sql)
+  }
   
 })

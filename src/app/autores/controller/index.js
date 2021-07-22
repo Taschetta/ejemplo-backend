@@ -4,6 +4,9 @@ export const useController = ({ table, libros }) => {
   const formatter = useFormatter({ libros })
 
   return {
+
+    libros,
+    
     async findMany(filters) {
       let items
 
@@ -22,12 +25,20 @@ export const useController = ({ table, libros }) => {
       return item
     },
   
-    async insertOne(item) {
-      return await table.insertOne(item)
+    async insertOne({ libros, ...item }) {
+      item = await table.insertOne(item)
+      items.libros = await this.libros.insertMany(libros, { fkAutor: item.id })
+      return item
     },
   
-    async updateOne(item) {
-      return await table.updateOne(item)
+    async updateOne({ libros, ...item }) {
+      item = await table.updateOne(item)
+      
+      item.libros = await this.libros.upsertMany(libros, { fkAutor: item.id })
+      
+      await this.libros.remove({ fkAutor: item.id, id: { $not: { $in: libros } } })
+
+      return item
     },
   
     async removeOne({ id }) {
