@@ -3,7 +3,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "test": "jest --config tests/config.js"
   },
   "workspaces": [
     "packages/*"
@@ -13,5 +14,9 @@
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.12"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "jest-esm-transformer": "^1.0.0"
   }
 }
