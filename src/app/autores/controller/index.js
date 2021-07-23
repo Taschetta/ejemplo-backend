@@ -27,7 +27,11 @@ export const useController = ({ table, libros }) => {
   
     async insertOne({ libros, ...item }) {
       item = await table.insertOne(item)
+      
       item.libros = await this.libros.insertMany(libros, { fkAutor: item.id })
+      
+      item = await formatter.fillOne(item)
+
       return item
     },
   
@@ -36,8 +40,10 @@ export const useController = ({ table, libros }) => {
       
       item.libros = await this.libros.upsertMany(libros, { fkAutor: item.id })
       
-      await this.libros.removeMany({ fkAutor: item.id, id: { $not: { $in: libros } } })
+      await this.libros.removeMany({ fkAutor: item.id, id: { $not: { $in: item.libros } } })
 
+      item = await formatter.fillOne(item)
+            
       return item
     },
   

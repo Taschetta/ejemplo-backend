@@ -28,25 +28,20 @@ export const configApp = ({ express, handler }) => (routes = {}) => {
   }
 
   function addRoutes(routes) {
-    object.forEach(routes, addRoute)
-    
-    function addRoute(route, value) {
-      
+    object.forEach(routes, (route, value) => {
       return (value.name == 'router')
         ? addRouter(route, value)
         : addMethods(route, value)
-    }
+    })
 
     function addRouter(route, router) {
       app.use(route, router)
     }
 
     function addMethods(route, value) {
-      object.forEach(value, addMethod)
-      
-      function addMethod(method, callback) {
+      object.forEach(value, (method, callback) => {
         app[method](route, handler(callback))
-      }
+      })
     }
   }
 

@@ -16,7 +16,13 @@ export const useFormatter = ({ libros }) => ({
   
   async fillOne(item) {
     item = this.cleanOne(item)
-    item.libros = await libros.findMany({ fkAutor: item.id })
+    
+    item.fechaActual = Date.now().toString()
+
+    if(!item.libros) 
+      item.libros = await libros.findMany({ fkAutor: item.id })
+    
+    
     return item
   },
 

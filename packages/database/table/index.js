@@ -2,6 +2,7 @@ import { useBuilder } from './builder.js'
 
 export const useTable = ({ database }) => ({ name: table }) => {
   const builder = useBuilder({ database })
+
   return {
 
     async query(statements) {
@@ -9,7 +10,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       return await database.query(sql)
     },
     
-    // find
 
     async findOne(filters, { fields, sort_by, sort_order } = {}) {
       let result
@@ -50,7 +50,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       return result
     },
 
-    // insert
 
     async insertOne(item) {
       let result, entries
@@ -92,7 +91,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       return result
     },
 
-    // update
 
     async updateOne(filters, update, options = {}) {
       let result
@@ -135,7 +133,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       return result
     },
 
-    // upsert
 
 
     async upsertOne({ id, ...item }) {
@@ -150,7 +147,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       return items
     },
 
-    // remove
 
     async removeOne(filters, options = {}) {
       const result = await this.query({
@@ -187,7 +183,6 @@ export const useTable = ({ database }) => ({ name: table }) => {
       } 
     },
 
-    // utilities
 
     clean(value) {
       value = Object.entries(value)
